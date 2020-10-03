@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Django stuff:
+db.sqlite3
+
+# Environments
+.env
+
+# Static files
+staticfiles
+staticfiles/
+media
+media/
+
+*.log
+*.pot
+*.pyc
+local_settings.py
+db.sqlite3
+venv/
+.vscode/
