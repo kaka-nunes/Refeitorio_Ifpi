@@ -1,9 +1,10 @@
 """
-Django settings for Refeitorio project.
+Django settings for dining_hall project.
 """
 
 from pathlib import Path
 from decouple import config, Csv
+from datetime import datetime
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,8 +21,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'refeitorio.accounts',
+    'dining_hall.accounts',
+    'dining_hall.course',
+    'dining_hall.food',
 ]
+
+BATON = {
+    'SITE_HEADER': 'Refeitório - IFPI',
+    'SITE_TITLE': 'Refeitório - IFPI',
+    'INDEX_TITLE': 'Administração do Sistema',
+    'SUPPORT_HREF': 'https://github.com/gguerran/',
+    'COPYRIGHT': 'Copyright © '+ str(datetime.now().year) +' IFPI - Campus Corrente', # noqa
+    'POWERED_BY': 'IFPI - Campus Corrente',
+    'GRAVATAR_DEFAULT_IMG': 'mp',
+
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -33,7 +47,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'refeitorio.urls'
+ROOT_URLCONF = 'dining_hall.urls'
 
 TEMPLATES = [
     {
@@ -51,7 +65,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'refeitorio.wsgi.application'
+WSGI_APPLICATION = 'dining_hall.wsgi.application'
 
 DATABASES = {
     'default': {
