@@ -3,6 +3,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('dining_hall.accounts.urls'))
 ]
 admin.site.site_header = "Refeitório - IFPI"
 admin.site.site_title = "Sistema de Administração do Refeitório - IFPI"

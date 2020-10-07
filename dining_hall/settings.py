@@ -1,7 +1,7 @@
 """
 Django settings for dining_hall project.
 """
-
+import os
 from pathlib import Path
 from decouple import config, Csv
 from datetime import datetime
@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
     'dining_hall.accounts',
     'dining_hall.course',
     'dining_hall.food',
@@ -36,6 +37,10 @@ BATON = {
     'GRAVATAR_DEFAULT_IMG': 'mp',
 
 }
+
+LOGIN_REDIRECT_URL = '/admin/'
+LOGIN_REDIRECT_URL = '/accounts/home/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -102,3 +107,5 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

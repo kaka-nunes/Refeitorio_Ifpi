@@ -8,7 +8,10 @@ class User(AbstractUser, PermissionsMixin):
     id = models.UUIDField(
         "id do usuário", primary_key=True, default=uuid.uuid4, editable=False
     )
-    username = models.CharField('nome de usuário', max_length=255, unique=True)
+    username = models.CharField(
+        'usuário (matricula para alunos e SUAP para servidores)',
+        max_length=255, unique=True
+    )
     name = models.CharField('nome', max_length=255)
     email = models.EmailField('e-mail', unique=True, null=True, blank=True)
     entry_date = models.DateField('data de ingresso', null=True, blank=True)
@@ -45,10 +48,12 @@ class Student(User):
     cpf = models.CharField('CPF', max_length=15, unique=True)
     rg = models.CharField('RG', max_length=20, unique=True)
     phone = models.CharField('telefone', max_length=14, unique=True)
-    profilepic = models.ImageField(verbose_name='foto', null=True, blank=True)
+    profilepic = models.ImageField(
+        verbose_name='foto', null=True, blank=True,upload_to='profile'
+    )
     student_class = models.ForeignKey(
         'course.Class', on_delete=models.PROTECT, verbose_name='turma'
-        )
+    )
     
     class Meta:
         verbose_name = 'aluno'
