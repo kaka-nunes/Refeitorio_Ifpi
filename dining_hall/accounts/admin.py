@@ -11,9 +11,9 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ['user_permissions']
 
     fieldsets = [
-        ['Personal info', {'fields': ['name', 'username', 'email']}],
+        ['Informações pessoais', {'fields': ['name', 'username', 'email']}],
         [
-            'Permissions',
+            'Permissões',
             {'fields': [
                 'is_active', 'is_staff', 'is_admin', 'is_superuser',
                 'user_permissions'
@@ -24,14 +24,14 @@ class CustomUserAdmin(UserAdmin):
 
     add_fieldsets = [
         [
-            'Personal info',
+            'Informações Pessoais',
             {'fields': [
                 'name', 'username', 'email', 'password', 'password2'
                 ]
             }
         ],
         [
-            'Permissions',
+            'Permissões',
             {'fields': [
                 'is_active', 'is_staff', 'is_admin', 'is_superuser',
                 'user_permissions'
@@ -53,13 +53,13 @@ class ServantAdmin(UserAdmin):
 
     fieldsets = [
         [
-            'Personal info', {'fields': [
-                'name', 'username', 'email', 'entry_date'
+            'Informações Pessoais', {'fields': [
+                'name', 'username', 'email', 'entry_date',
                 ]
             }
         ],
         [
-            'Permissions',
+            'Permissões',
             {'fields': ['is_active', 'is_staff', 'is_admin', 'is_superuser']
             }
         ],
@@ -68,8 +68,8 @@ class ServantAdmin(UserAdmin):
     add_fieldsets = [
         ['Personal info', {
             'fields': [
-                'name', 'username', 'email', 'entry_date', 'password1',
-                'password2'
+                'name', 'username', 'email', 'entry_date',
+                'password1', 'password2'
                 ]
             }
         ],
@@ -101,7 +101,7 @@ class StudentAdmin(UserAdmin):
     fieldsets = [
         [
             'Personal info', {'fields': [
-                'name', 'username', 'email', 'birthdate', 'cpf',
+                'name', 'username', 'email', 'phone', 'birthdate', 'cpf',
                 'rg', 'profilepic', 'student_class', 'entry_date',
                 ]
             }
@@ -116,7 +116,7 @@ class StudentAdmin(UserAdmin):
     add_fieldsets = [
         ['Personal info', {
             'fields': [
-                'name', 'username', 'email', 'cpf', 'rg',
+                'name', 'username', 'email', 'phone', 'cpf', 'rg',
                 'birthdate', 'profilepic', 'student_class', 'entry_date',
                 'password1', 'password2'
                 ]

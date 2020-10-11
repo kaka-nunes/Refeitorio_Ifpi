@@ -48,7 +48,7 @@ class Reservation(models.Model):
         "data de retirada da pendência", null=True, blank=True
     )
     user_removed_pending = models.ForeignKey(
-        "accounts.User", verbose_name="usuário que retirou a pendência",
+        "accounts.Servant", verbose_name="usuário que retirou a pendência",
         on_delete=models.PROTECT, null=True, blank=True
     )
 

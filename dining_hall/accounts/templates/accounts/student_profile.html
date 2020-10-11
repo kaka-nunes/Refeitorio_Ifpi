@@ -7,11 +7,11 @@
 	<div class="row">
 		<ol class="breadcrumb">
 			<li>
-                <a href="{% url 'accounts:home' %}">
-                    <em class="fa fa-home"></em> Estudante</a>
-                <li class="bread-active">Perfil</li>
-            </li>
-			
+                <a href="{% url 'accounts:home' %}"  style="color: #000000;">
+					<em class="fa fa-home"></em> Estudante
+				</a>
+			</li>
+            <li class="bread-active">Perfil</li>
 		</ol>
     </div><!--/.row-->
     
@@ -37,7 +37,7 @@
                             <div class="col-md-6"><h3>Turma: <spam class="h4">{{ object.student_class }}</spam></h3></div>
                         </div>
                         <div class="col-md-2">
-                            <img src="{{ object.profilepic.url }}" alt="{{ object.profilepic.url }}">
+                            <img src="{% if object.profilepic %}{{ object.profilepic.url }}{% endif %}" alt="{% if object.profilepic %}{{ object.profilepic.url }}{% endif %}">
                         </div>
                     </div>
 				</div>

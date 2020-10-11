@@ -53,7 +53,7 @@
 	<div id="sidebar-collapse" class="col-sm-3 col-lg-2 sidebar">
 		<div class="profile-sidebar">
 			<div class="profile-userpic">
-				<img src="{{student.profilepic.url}}" class="img-responsive" alt="Profilepic">
+				<img src="{% if student.profilepic %}{{student.profilepic.url}}{%endif%}" class="img-responsive" alt="Profilepic">
 			</div>
 			<div class="profile-usertitle">
 				<div class="profile-usertitle-name">{{request.user.name}}</div>
@@ -65,7 +65,7 @@
 		<ul class="nav menu">
 			<li class="{% if page_name == 'home' %} active {% endif %}"><a href="{% url 'accounts:home' %}"><em class="fa fa-dashboard">&nbsp;</em> Início</a></li>
 			<li class="{% if page_name == 'profile' %} active {% endif %}"><a href="{% url 'accounts:profile' pk=request.user.id %}"><em class="fa fa-user">&nbsp;</em> Perfil</a></li>
-			<li class="{% if page_name == 'history' %} active {% endif %}"><a href="charts.html"><em class="fa fa-calendar">&nbsp;</em> Histórico</a></li>
+			<li class="{% if page_name == 'history' %} active {% endif %}"><a href="{% url 'accounts:historic' %}"><em class="fa fa-calendar">&nbsp;</em> Histórico</a></li>
 			<li class="{% if page_name == 'peding' %} active {% endif %}"><a href="elements.html"><em class="fa fa-warning">&nbsp;</em> Pendências</a></li>
 			<li><a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a></li>
 		</ul>
@@ -79,7 +79,7 @@
 		<div class="row">
 			
 			<div class="col-sm-12">
-				<p class="back-link">Desenvolvido por <a href="https://www.github.com/sandysant0s/">Sandy Santos</a></p>
+				<p class="back-link">Desenvolvido por <a href="https://www.ifpi.edu.br/" target="blank">IFPI</a></p>
 			</div>
 		</div>
 	</div>
