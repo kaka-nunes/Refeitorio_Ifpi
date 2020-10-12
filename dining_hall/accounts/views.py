@@ -6,9 +6,9 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView, TemplateView, View
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from dining_hall.accounts.forms import StudantCreateForm
+from dining_hall.accounts.forms import StudantCreateForm, AddMotivePendingForm
 from dining_hall.accounts.models import Servant, Student, User
 from dining_hall.food.models import Food, Reservation
 
@@ -42,28 +42,31 @@ class StudentHomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(StudentHomeView, self).get_context_data(**kwargs)
         context['page_name'] = 'home'
-        foods = Food.objects.filter(date=datetime.now())
         lim_quant = 'Não disponível'
         reservations = 'Não disponível'
         available = 'Não disponível'
         type_food = ' - fora do horário de reservas'
-        if datetime.now().hour <= 12:
-            food = foods.get(type_food='Almoço')
-            context['food'] = food
-            lim_quant = food.limit_quantity
-            if food.limit_quantity < 1:
-                lim_quant = 'Não disponível'
-            type_food = ' - Almoço'
-            reservations = str(Reservation.objects.filter(food=food).count())
-        if datetime.now().hour >= 18:
-            food = foods.get(type_food='Jantar')
-            context['food'] = food
-            lim_quant = food.limit_quantity
-            if food.limit_quantity < 1:
-                lim_quant = 'Não disponível'
-            type_food = ' - Jantar'
-            reservations = Reservation.objects.filter(food=food).count()
-            available = food.limit_quantity - reservations
+        try:
+            foods = Food.objects.filter(date=datetime.now())
+            if datetime.now().hour <= 12:
+                food = foods.get(type_food='Almoço')
+                context['food'] = food
+                lim_quant = food.limit_quantity
+                if food.limit_quantity < 1:
+                    lim_quant = 'Não disponível'
+                type_food = ' - Almoço'
+                reservations = str(Reservation.objects.filter(food=food).count())
+            if datetime.now().hour >= 18:
+                food = foods.get(type_food='Jantar')
+                context['food'] = food
+                lim_quant = food.limit_quantity
+                if food.limit_quantity < 1:
+                    lim_quant = 'Não disponível'
+                type_food = ' - Jantar'
+                reservations = Reservation.objects.filter(food=food).count()
+                available = food.limit_quantity - reservations
+        except:
+            pass
         
         context['type_food'] = type_food
         context['reservations'] = reservations
@@ -156,6 +159,22 @@ class HistoryStudentView(ListView):
 
 
 @method_decorator(login_required, name='dispatch')
+class PendingStudentView(ListView):
+    template_name = "accounts/pending_student.html"
+
+    def get_queryset(self):
+        queryset = Reservation.objects.filter(
+            registered_user__id=self.request.user.id).filter(pending=True)
+        return queryset
+
+
+    def get_context_data(self, **kwargs):
+        context = super(PendingStudentView, self).get_context_data(**kwargs)
+        context['page_name'] = 'peding'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
 class StudentProfileView(DetailView):
     model = Student
     template_name = "accounts/student_profile.html"
@@ -164,3 +183,16 @@ class StudentProfileView(DetailView):
         context = super(StudentProfileView, self).get_context_data(**kwargs)
         context['page_name'] = 'profile'
         return context
+
+
+@method_decorator(login_required, name='dispatch')
+class AddMotiveView(View):
+    def post(self, *args, **kwargs):
+        pk = self.request.POST.get('id_pending')
+        reservation = Reservation.objects.get(id=pk)
+        reservation.motive = self.request.POST.get('motive')
+        reservation.save()
+        message = 'Motivo adicionado com sucesso'
+        messages.success(self.request, message)
+        success_url = reverse_lazy('accounts:pending')
+        return redirect(success_url)

@@ -27,18 +27,6 @@ INSTALLED_APPS = [
     'dining_hall.food',
 ]
 
-BATON = {
-    'SITE_HEADER': 'Refeitório - IFPI',
-    'SITE_TITLE': 'Refeitório - IFPI',
-    'INDEX_TITLE': 'Administração do Sistema',
-    'SUPPORT_HREF': 'https://github.com/gguerran/',
-    'COPYRIGHT': 'Copyright © '+ str(datetime.now().year) +' IFPI - Campus Corrente', # noqa
-    'POWERED_BY': 'IFPI - Campus Corrente',
-    'GRAVATAR_DEFAULT_IMG': 'mp',
-
-}
-
-LOGIN_REDIRECT_URL = '/admin/'
 LOGIN_REDIRECT_URL = '/accounts/home/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 

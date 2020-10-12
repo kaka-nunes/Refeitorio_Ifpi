@@ -10,3 +10,7 @@ class StudantCreateForm(forms.ModelForm):
             'username', 'name', 'email', 'entry_date', 'birthdate', 'cpf',
             'rg', 'phone', 'profilepic', 'student_class'
         ]
+
+
+class AddMotivePendingForm(forms.Form):
+    motive = forms.CharField(label='Motivo')

@@ -19,9 +19,11 @@ class Food(models.Model):
         "tipe de refeição", choices=FOOD_CHOICES, max_length=14
     )
     registered_user = models.ForeignKey(
-        "accounts.User", verbose_name="usuário que cadastrou",
+        "accounts.Servant", verbose_name="usuário que cadastrou",
         on_delete=models.PROTECT
     )
+    created_at = models.DateTimeField('criado em', auto_now_add=True)
+    modified_at = models.DateTimeField('modificado em', auto_now=True)
 
     def __str__(self):
         return self.description
@@ -51,6 +53,11 @@ class Reservation(models.Model):
         "accounts.Servant", verbose_name="usuário que retirou a pendência",
         on_delete=models.PROTECT, null=True, blank=True
     )
+    motive = models.CharField(
+        'motivo da pendência', null=True, blank=True, max_length=255
+    )
+    created_at = models.DateTimeField('criado em', auto_now_add=True)
+    modified_at = models.DateTimeField('modificado em', auto_now=True)
 
     def __str__(self):
         return  self.food.type_food + " - " + str(self.registered_user) +\

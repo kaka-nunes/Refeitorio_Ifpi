@@ -25,7 +25,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span></button>
-				<a class="navbar-brand" href="#"><span>Refeitório</span>IFPI</a>
+				<a class="navbar-brand" href="#"><span>Refeitório</span><span style="color: #2b9f3f">IFPI</span></a>
 				<ul class="nav navbar-top-links navbar-right">
 					<li class="dropdown"><a class="dropdown-toggle count-info" data-toggle="dropdown" href="#">
 						<em class="fa fa-bell"></em><span class="label label-info">{{ peding }}</span>
@@ -66,7 +66,7 @@
 			<li class="{% if page_name == 'home' %} active {% endif %}"><a href="{% url 'accounts:home' %}"><em class="fa fa-dashboard">&nbsp;</em> Início</a></li>
 			<li class="{% if page_name == 'profile' %} active {% endif %}"><a href="{% url 'accounts:profile' pk=request.user.id %}"><em class="fa fa-user">&nbsp;</em> Perfil</a></li>
 			<li class="{% if page_name == 'history' %} active {% endif %}"><a href="{% url 'accounts:historic' %}"><em class="fa fa-calendar">&nbsp;</em> Histórico</a></li>
-			<li class="{% if page_name == 'peding' %} active {% endif %}"><a href="elements.html"><em class="fa fa-warning">&nbsp;</em> Pendências</a></li>
+			<li class="{% if page_name == 'peding' %} active {% endif %}"><a href="{% url 'accounts:pending' %}"><em class="fa fa-warning">&nbsp;</em> Pendências</a></li>
 			<li><a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a></li>
 		</ul>
     </div>

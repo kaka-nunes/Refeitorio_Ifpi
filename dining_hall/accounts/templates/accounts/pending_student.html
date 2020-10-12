@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+		
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+	<div class="row">
+		<ol class="breadcrumb">
+			<li>
+                <a href="{% url 'accounts:home' %}"  style="color: #000000;">
+					<em class="fa fa-home"></em> Estudante
+				</a>
+			</li>
+            <li class="bread-active">Pendências</li>
+		</ol>
+	</div><!--/.row-->
+	<br>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %}" role="alert">
+			{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+    
+	<div class="row">
+		<div class="col-lg-12">
+			<h7>&nbsp;</h7>
+		</div>
+	</div>
+	
+	<div class="col-lg-12 panel">
+		<div class="panel-body timeline-container">
+			<ul class="timeline">
+				{%for pending in object_list %}
+				<li>
+					<div class="timeline-badge {% if pending.pending %} primary{% endif %}">
+						<em class="glyphicon glyphicon-cutlery"></em>
+					</div>
+					<div class="timeline-panel">
+						<div class="timeline-heading">
+							<h4 class="timeline-title">{{pending.date}}</h4>
+						</div>
+						<div class="timeline-body">
+							<div class="col-md-12">
+								<p style="color: #000000;">{{pending.food.type_food}} - {{pending.food.description}}</p>
+								<p style="color: #000000;">{% if pending.pending_withdrawal_date %}Data da pendência: {{pending.pending_withdrawal_date}}{% endif %}</p>
+								<p style="color: #000000;">{% if pending.user_removed_pending %}Servidor que retirou a pendência: {{pending.user_removed_pending}}{% endif %}</p>
+							</div>
+							<div class="col-md-6">
+								<form action="{% url 'accounts:add_motive' %}" method="POST">
+									{% csrf_token %}
+									<input type="hidden" name='id_pending' value="{{pending.pk}}">
+									<input class="form-control" type="text" name="motive" placeholder="{% if pending.motive %} {{ pending.motive }} {% else %} Motivo {% endif %}" value="{% if pending.motive %} {{ pending.motive }} {% else %}{% endif %}"/>
+									<br>&nbsp;
+									<input type="submit" class="btn btn-info" name="enviar">
+								</form>
+							</div>
+							</div>
+					</div>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-lg-12">
+			<h7>&nbsp;</h7>
+		</div>
+	</div>
+{% endblock%}

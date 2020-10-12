@@ -13,6 +13,8 @@ class Course(models.Model):
         "id do curso", primary_key=True, default=uuid.uuid4, editable=False
     )
     description = models.CharField('descrição', max_length=255)
+    created_at = models.DateTimeField('criado em', auto_now_add=True)
+    modified_at = models.DateTimeField('modificado em', auto_now=True)
 
     def __str__(self):
         return self.description
@@ -31,6 +33,9 @@ class Class(models.Model):
     )
     shift = models.CharField('turno', choices=SHIFT_CHOICES, max_length=10)
     description = models.CharField('descrição', max_length=55)
+    created_at = models.DateTimeField('criado em', auto_now_add=True)
+    modified_at = models.DateTimeField('modificado em', auto_now=True)
+
     def __str__(self):
         return self.description + ' - ' + str(self.course) + ' - ' + self.shift
 

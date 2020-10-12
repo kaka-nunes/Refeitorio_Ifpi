@@ -30,5 +30,13 @@ urlpatterns = [
         'historic/', views.HistoryStudentView.as_view(),
         name='historic'
     ),
+    path(
+        'pending/', views.PendingStudentView.as_view(),
+        name='pending'
+    ),
+    path(
+        'add_motive/', views.AddMotiveView.as_view(),
+        name='add_motive'
+    ),
     path('servant/', views.ServantHomeView.as_view(), name='servant'),
 ]
