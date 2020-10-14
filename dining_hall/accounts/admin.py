@@ -11,7 +11,9 @@ class CustomUserAdmin(UserAdmin):
     filter_horizontal = ['user_permissions']
 
     fieldsets = [
-        ['Informações pessoais', {'fields': ['name', 'username', 'email']}],
+        ['Informações pessoais', {'fields': [
+            'name', 'username', 'email', 'profilepic'
+        ]}],
         [
             'Permissões',
             {'fields': [
@@ -26,7 +28,8 @@ class CustomUserAdmin(UserAdmin):
         [
             'Informações Pessoais',
             {'fields': [
-                'name', 'username', 'email', 'password', 'password2'
+                'name', 'username', 'email', 'profilepic', 'password',
+                'password2'
                 ]
             }
         ],

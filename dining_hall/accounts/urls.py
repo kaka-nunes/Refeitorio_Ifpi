@@ -26,17 +26,20 @@ urlpatterns = [
     path(
         'profile/<str:pk>', views.StudentProfileView.as_view(), name='profile'
     ),
-    path(
-        'historic/', views.HistoryStudentView.as_view(),
-        name='historic'
-    ),
-    path(
-        'pending/', views.PendingStudentView.as_view(),
-        name='pending'
-    ),
-    path(
-        'add_motive/', views.AddMotiveView.as_view(),
-        name='add_motive'
-    ),
+    path('historic/', views.HistoryStudentView.as_view(), name='historic'),
+    path('pending/', views.PendingStudentView.as_view(), name='pending'),
+    path('add_motive/', views.AddMotiveView.as_view(), name='add_motive'),
     path('servant/', views.ServantHomeView.as_view(), name='servant'),
+    path('add_student/', views.AddStudentView.as_view(), name='add_student'),
+    path(
+        'list_student/', views.ListStudentView.as_view(), name='list_student'
+    ),
+    path(
+        'inative_student/<str:pk>', views.InativeStudentView.as_view(),
+        name='inative_student'
+    ),
+    path(
+        'edit_student/<str:pk>', views.UpdateStudentView.as_view(),
+        name='edit_student'
+    ),
 ]

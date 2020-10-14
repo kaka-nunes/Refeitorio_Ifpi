@@ -1,7 +1,20 @@
+import os
 import uuid
+
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
+from django.utils.crypto import get_random_string
+
 from dining_hall.accounts.managers import UserManager
+
+
+def profilepic_directory_path(instance, filename):
+    name, extension = os.path.splitext(filename)
+    chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    file_name = get_random_string(10, chars)
+    return 'profilepic/{0}/{1}{2}'.format(
+        instance.id, file_name, extension
+    )
 
 
 class User(AbstractUser, PermissionsMixin):
@@ -15,6 +28,10 @@ class User(AbstractUser, PermissionsMixin):
     name = models.CharField('nome', max_length=255)
     email = models.EmailField('e-mail', unique=True, null=True, blank=True)
     entry_date = models.DateField('data de ingresso', null=True, blank=True)
+    profilepic = models.ImageField(
+        verbose_name='foto', null=True, blank=True,
+        upload_to=profilepic_directory_path
+    )
     is_active = models.BooleanField('ativo', default=True)
     is_staff = models.BooleanField('equipe', default=False)
     is_admin = models.BooleanField('administrador', default=False)
@@ -48,9 +65,6 @@ class Student(User):
     cpf = models.CharField('CPF', max_length=15, unique=True)
     rg = models.CharField('RG', max_length=20, unique=True)
     phone = models.CharField('telefone', max_length=14, unique=True)
-    profilepic = models.ImageField(
-        verbose_name='foto', null=True, blank=True,upload_to='profile'
-    )
     student_class = models.ForeignKey(
         'course.Class', on_delete=models.PROTECT, verbose_name='turma'
     )

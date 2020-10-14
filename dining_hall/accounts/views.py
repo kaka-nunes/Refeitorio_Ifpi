@@ -1,14 +1,15 @@
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from dining_hall.accounts.forms import StudantCreateForm, AddMotivePendingForm
+from dining_hall.accounts.forms import StudantCreateForm
 from dining_hall.accounts.models import Servant, Student, User
 from dining_hall.food.models import Food, Reservation
 
@@ -138,11 +139,6 @@ class CancelReservationView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class ServantHomeView(TemplateView):
-    template_name = "accounts/servant_home.html"
-
-
-@method_decorator(login_required, name='dispatch')
 class HistoryStudentView(ListView):
     template_name = "accounts/history_student.html"
 
@@ -196,3 +192,101 @@ class AddMotiveView(View):
         messages.success(self.request, message)
         success_url = reverse_lazy('accounts:pending')
         return redirect(success_url)
+
+
+@method_decorator(login_required, name='dispatch')
+class ServantHomeView(TemplateView):
+    template_name = "accounts/servant_home.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(ServantHomeView, self).get_context_data(**kwargs)
+        today = datetime.now()
+        context['page_name'] = 'home'
+        type_food = 'Almoço'
+        context['type_food'] = 'Não disponível'
+        total_reservations = 0
+        reservations = 0
+        available = 0
+        if today.hour > 12:
+            type_food = 'Jantar'
+        try: 
+            foods = Food.objects.filter(date=today)
+            if len(foods) > 0:
+                food = foods.get(type_food=type_food)
+                total_reservations = food[0].limit_quantity
+                reservations = int(
+                    Reservation.objects.filter(food=food).count())
+                available = total_reservations - reservations
+                context['type_food'] = str(food)
+        except:
+            pass
+        pending = Reservation.objects.filter(pending=True).count
+        context['peding'] = pending
+        context['available'] = available
+        context['reservations'] = reservations
+        context['total_reservations'] = total_reservations
+        context['page_name'] = 'home'   
+        context["servant"] = Servant.objects.get(id=self.request.user.id)
+        return context
+
+
+class AddStudentView(SuccessMessageMixin, CreateView):
+    model = Student
+    template_name = 'accounts/add_student.html'
+    form_class = StudantCreateForm
+    success_url = reverse_lazy('accounts:add_student')
+    success_message = 'Aluno adicionado com sucesso'
+
+    def get_context_data(self, **kwargs):
+        context = super(AddStudentView, self).get_context_data(**kwargs)
+        context['page_name'] = 'student'
+        context['action'] = 'Cadastrar'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class ListStudentView(ListView):
+    model = Student
+    template_name = "accounts/list_student.html"
+
+    def get_queryset(self):
+        queryset = Student.objects.all()
+        return queryset
+
+
+    def get_context_data(self, **kwargs):
+        context = super(ListStudentView, self).get_context_data(**kwargs)
+        context['page_name'] = 'student'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class InativeStudentView(View):
+    
+    def get(self, request, pk):
+        student = Student.objects.get(pk=pk)
+        action = 'desativado'
+        if student.is_active:
+            student.is_active = False
+        else:
+            action = 'ativado'
+            student.is_active = True
+        student.save()
+        message = 'Aluno ' + action + ' com sucesso'
+        messages.success(request, message)
+        success_url = reverse_lazy('accounts:list_student')
+        return redirect(success_url)
+
+
+class UpdateStudentView(SuccessMessageMixin, UpdateView):
+    model = Student
+    template_name = 'accounts/add_student.html'
+    form_class = StudantCreateForm
+    success_url = reverse_lazy('accounts:list_student')
+    success_message = 'Aluno alterado com sucesso'
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateStudentView, self).get_context_data(**kwargs)
+        context['page_name'] = 'student'
+        context['action'] = 'Alterar'
+        return context
