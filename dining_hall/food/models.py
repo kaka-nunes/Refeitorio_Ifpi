@@ -20,7 +20,7 @@ class Food(models.Model):
     )
     registered_user = models.ForeignKey(
         "accounts.Servant", verbose_name="usuário que cadastrou",
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT, null=True, blank=True
     )
     created_at = models.DateTimeField('criado em', auto_now_add=True)
     modified_at = models.DateTimeField('modificado em', auto_now=True)

@@ -1,0 +1,67 @@
+{% extends "base_servant.html" %}
+{% load static %}
+{% load bootstrap %}
+
+{% block content %}
+
+<div class="col-sm-9 col-sm-offset-3 col-lg-10 col-lg-offset-2 main">
+	<div class="row">
+		<ol class="breadcrumb">
+			<li>
+				<a style="color: #000000;" href="{% url 'accounts:home' %}">
+					<em class="fa fa-home"></em>
+					Servidor
+				</a>
+			</li>
+			<li class="bread-active">Refeição</li>
+			<li class="bread-active">Listar</li>
+		</ol>
+	</div><!--/.row-->
+	<br>
+	{% if messages %}
+		{% for message in messages %}
+			<div class="alert {% if message.tags == 'error' %} alert-danger {% else %} alert-{{ message.tags }} {% endif %}" role="alert">
+			{{ message }}
+			</div>
+		{% endfor %}
+	{% endif %}
+	<div class="row">
+		<div class="col-lg-12">
+			<h7>&nbsp;</h7>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<div class="panel panel-default ">
+				<div class="panel-heading">Refeoões</div>
+				<div class="panel-body timeline-container">
+					<ul class="timeline">
+						{% for food in object_list %}
+						<li>
+							<div class="timeline-badge primary">
+								<em class="glyphicon glyphicon-cutlery"></em>
+							</div>
+							<div class="timeline-panel">
+								<div class="timeline-body">
+									<div class="col-md-6">
+										<p style="color: #000000;"><b>Descrição: </b>{{ food.description }}</p>
+										<p style="color: #000000;"><b>Data: </b>{{ food.date }}</p>										
+										<p style="color: #000000;"><b>Servidor que cadastrou: </b>{{ food.registered_user }}</p>										
+									</div>
+									<div class="col-md-6">
+										<p style="color: #000000;"><b>Quantidade limite: </b>{{ food.limit_quantity }}</p>
+										<p style="color: #000000;"><b>tipe de refeição: </b>{{ food.type_food }}</p>
+										<a class="btn btn-warning" href="{% url 'accounts:edit_food' pk=food.id %}">
+											<em class="glyphicon glyphicon-edit"></em> Alterar</a>
+									</div>
+								</div>
+							</div>
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div><!--/.col-->
+	</div>
+	</div>
+{% endblock%}

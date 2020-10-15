@@ -7,9 +7,7 @@ app_name = 'accounts'
 
 urlpatterns = [
     path(
-        'login/', LoginView.as_view(
-            template_name = 'accounts/login.html'
-        ),
+        'login/', LoginView.as_view(template_name='accounts/login.html'),
         name='login'
     ),
     path('logout/', LogoutView.as_view(), name='logout'),
@@ -41,5 +39,22 @@ urlpatterns = [
     path(
         'edit_student/<str:pk>', views.UpdateStudentView.as_view(),
         name='edit_student'
+    ),
+    path('add_servant/', views.AddServantView.as_view(), name='add_servant'),
+    path(
+        'list_servant/', views.ListServantView.as_view(), name='list_servant'
+    ),
+    path(
+        'inative_servant/<str:pk>', views.InativeServantView.as_view(),
+        name='inative_servant'
+    ),
+    path(
+        'edit_servant/<str:pk>', views.UpdateServantView.as_view(),
+        name='edit_servant'
+    ),
+    path('add_food/', views.AddFoodView.as_view(), name='add_food'),
+    path('list_food/', views.ListFoodView.as_view(), name='list_food'),
+    path(
+        'edit_food/<str:pk>', views.UpdateFoodView.as_view(), name='edit_food'
     ),
 ]

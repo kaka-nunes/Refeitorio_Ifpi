@@ -9,9 +9,13 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
-from dining_hall.accounts.forms import StudantCreateForm
+from dining_hall.accounts.forms import (
+    StudantCreateForm, ServantCreateForm, ServantUpdateForm
+)
 from dining_hall.accounts.models import Servant, Student, User
 from dining_hall.food.models import Food, Reservation
+from dining_hall.food.forms import FoodAddForm
+
 
 
 # @method_decorator(login_required, name='dispatch')
@@ -288,5 +292,134 @@ class UpdateStudentView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UpdateStudentView, self).get_context_data(**kwargs)
         context['page_name'] = 'student'
+        context['action'] = 'Alterar'
+        return context
+
+
+class AddServantView(SuccessMessageMixin, CreateView):
+    model = Servant
+    template_name = 'accounts/add_servant.html'
+    form_class = ServantCreateForm
+    success_url = reverse_lazy('accounts:add_servant')
+    success_message = 'Servidor adicionado com sucesso'
+
+    def get_context_data(self, **kwargs):
+        context = super(AddServantView, self).get_context_data(**kwargs)
+        context['page_name'] = 'servant'
+        context['action'] = 'Cadastrar'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class ListServantView(ListView):
+    model = Servant
+    template_name = "accounts/list_servant.html"
+
+    def get_queryset(self):
+        queryset = Servant.objects.all()
+        return queryset
+
+
+    def get_context_data(self, **kwargs):
+        context = super(ListServantView, self).get_context_data(**kwargs)
+        context['page_name'] = 'servant'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class InativeServantView(View):
+    
+    def get(self, request, pk):
+        success_url = reverse_lazy('accounts:list_servant')
+        servant1 = Servant.objects.get(pk=pk)
+        servant2 = Servant.objects.get(pk=self.request.user.id)
+        if servant1 == servant2:
+            message = 'Ops, você não pode se desativar!'
+            messages.error(request, message)
+            return redirect(success_url)
+
+        servant = Servant.objects.get(pk=pk)
+        action = 'desativado'
+        if servant.is_active:
+            servant.is_active = False
+        else:
+            action = 'ativado'
+            servant.is_active = True
+        servant.save()
+        message = 'Servidor ' + action + ' com sucesso'
+        messages.success(request, message)
+        return redirect(success_url)
+
+
+class UpdateServantView(SuccessMessageMixin, UpdateView):
+    model = Servant
+    template_name = 'accounts/add_servant.html'
+    form_class = ServantUpdateForm
+    success_url = reverse_lazy('accounts:list_servant')
+    success_message = 'Servidor alterado com sucesso'
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateServantView, self).get_context_data(**kwargs)
+        context['page_name'] = 'servant'
+        context['action'] = 'Alterar'
+        return context
+
+
+class AddFoodView(SuccessMessageMixin, CreateView):
+    model = Food
+    template_name = 'accounts/add_food.html'
+    form_class = FoodAddForm
+    success_url = reverse_lazy('accounts:add_food')
+
+    def form_valid(self, form):
+        food = form.save(commit=False)
+        servant = Servant.objects.get(pk=self.request.user.pk)
+        food.registered_user = servant
+        food.save()
+        message = 'Refeição adicionado com sucesso'
+        messages.success(self.request, message)
+        return redirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(AddFoodView, self).get_context_data(**kwargs)
+        context['page_name'] = 'food'
+        context['action'] = 'Cadastrar'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class ListFoodView(ListView):
+    model = Food
+    template_name = "accounts/list_food.html"
+
+    def get_queryset(self):
+        queryset = Food.objects.all()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListFoodView, self).get_context_data(**kwargs)
+        context['page_name'] = 'food'
+        return context
+
+
+class UpdateFoodView(SuccessMessageMixin, UpdateView):
+    model = Food
+    template_name = 'accounts/add_food.html'
+    form_class = FoodAddForm
+    success_url = reverse_lazy('accounts:list_food')
+    success_message = 'Refeição alterada com sucesso'
+
+    def form_valid(self, form):
+        food = form.save(commit=False)
+        servant = Servant.objects.get(pk=self.request.user.pk)
+        food.registered_user = servant
+        food.save()
+        message = 'Refeição alterada com sucesso'
+        messages.success(self.request, message)
+        return redirect(self.success_url)
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateFoodView, self).get_context_data(**kwargs)
+        context['page_name'] = 'food'
         context['action'] = 'Alterar'
         return context

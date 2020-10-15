@@ -9,6 +9,7 @@
 	<link href="{% static 'css/font-awesome.min.css' %}" rel="stylesheet">
 	<link href="{% static 'css/datepicker3.css' %}" rel="stylesheet">
 	<link href="{% static 'css/styles.css' %}" rel="stylesheet">
+	<link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
 	
 	<!--Custom Font-->
 	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -43,22 +44,21 @@
 			<div class="clear"></div>
 		</div>
 		<div class="divider"></div>
-		<form role="search">
-			<div class="form-group">
-				<input type="text" class="form-control" placeholder="Search">
-			</div>
-		</form>
 		<ul class="nav menu">
 			
 			<li class="{% if page_name == 'home' %} active {% endif %}">
 				<a href="{% url 'accounts:home' %}">
-					<em class="fa fa-dashboard"></em> Início
+					<em class="fa fa-dashboard">&nbsp;</em> Início
+				</a>
+			</li>
+			<li class="{% if page_name == 'profile' %} active {% endif %}">
+				<a href="{% url 'accounts:home' %}">
+					<em class="fa fa-user">&nbsp;</em> Perfil
 				</a>
 			</li>
 			<li class="parent {% if page_name == 'student' %} active {% endif %}">
 				<a data-toggle="collapse" href="#sub-item-1">
-					<em class="fa fa-graduation-cap">&nbsp;</em>
-					Aluno
+					<em class="fa fa-graduation-cap">&nbsp;</em>	Aluno
 					<span data-toggle="collapse" href="#sub-item-1" class="icon pull-right">
 						<em class="fa fa-plus"></em>
 					</span>
@@ -66,50 +66,66 @@
 				<ul class="children collapse" id="sub-item-1">
 					<li>
 						<a class="" href="{% url 'accounts:add_student' %}">
-							<span class="fa fa-arrow-right">&nbsp;</span> Adicionar
+							<span class="fa fa-arrow-right"></span>
+							Adicionar
 						</a>
 					</li>
 					<li>
 						<a class="" href="{% url 'accounts:list_student' %}">
-							<span class="fa fa-arrow-right">&nbsp;</span> Listar
+							<span class="fa fa-arrow-right"></span>
+							Listar
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="parent "><a data-toggle="collapse" href="#sub-item-2">
-				<em class="fa fa-user">&nbsp;</em> Servidor <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+			<li class="parent {% if page_name == 'servant' %} active {% endif %}">
+				<a data-toggle="collapse" href="#sub-item-2">
+					<em class="fa fa-user">&nbsp;</em>Servidor
+					<span data-toggle="collapse" href="#sub-item-2" class="icon pull-right">
+						<em class="fa fa-plus"></em>
+					</span>
 				</a>
 				<ul class="children collapse" id="sub-item-2">
 					<li>
-						<a class="" href="#">
-							<span class="fa fa-arrow-right">&nbsp;</span> Adicionar
+						<a class="" href="{% url 'accounts:add_servant' %}">
+							<span class="fa fa-arrow-right"></span>
+							Adicionar
 						</a>
 					</li>
 					<li>
-						<a class="" href="#">
-							<span class="fa fa-arrow-right">&nbsp;</span> Listar
+						<a class="" href="{% url 'accounts:list_servant' %}">
+							<span class="fa fa-arrow-right"></span>
+							Listar
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li class="parent "><a data-toggle="collapse" href="#sub-item-3">
-				<em class="glyphicon glyphicon-cutlery"></em> Refeição <span data-toggle="collapse" href="#sub-item-1" class="icon pull-right"><em class="fa fa-plus"></em></span>
+			<li class="parent ">
+				<a data-toggle="collapse" href="#sub-item-3">
+					<em class="glyphicon glyphicon-cutlery">&nbsp;</em>Refeição
+					<span data-toggle="collapse" href="#sub-item-3" class="icon pull-right">
+						<em class="fa fa-plus"></em>
+					</span>
 				</a>
 				<ul class="children collapse" id="sub-item-3">
 					<li>
-						<a class="" href="#">
-							<span class="fa fa-arrow-right">&nbsp;</span> Adicionar
+						<a class="" href="{% url 'accounts:add_food' %}">
+							<span class="fa fa-arrow-right"></span> Adicionar
 						</a>
 					</li>
 					<li>
-						<a class="" href="#">
-							<span class="fa fa-arrow-right">&nbsp;</span> Listar
+						<a class="" href="{% url 'accounts:list_food' %}">
+							<span class="fa fa-arrow-right"></span> Listar
 						</a>
 					</li>
 				</ul>
 			</li>
-			<li><a href="widgets.html"><em class="fa fa-warning">&nbsp;</em> Pendência</a></li>
-			<li><a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a></li>
+			<li>
+				<a href="#"><em class="fa fa-warning">&nbsp;</em> Pendência</a>
+			</li>
+			<li>
+				<a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a>
+			</li>
 		</ul>
 	</div><!--/.sidebar-->
 	{% block content %}
