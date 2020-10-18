@@ -1,21 +1,51 @@
-"""
+from django.contrib import messages
 from django.shortcuts import redirect
 
+from dining_hall.accounts.models import Servant, Student
 
-class RedirectStudentyMixin:
 
-    def get(self, *args, **kwargs):
-        try: 
+class RedirectStudentMixin:
+
+    redirect_url = None
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
             student = Student.objects.get(id=self.request.user.id)
             if student:
-                return reverse_lazy('accounts:student')
+                return super().dispatch(request, *args, **kwargs)
         except:
-            try: 
+            try:
                 servant = Servant.objects.get(id=self.request.user.id)
+
+                message = 'Ops, você não é estudante'
+                messages.error(self.request, message)
+                
                 if servant:
-                    return reverse_lazy('accounts:servant')
+                    return redirect('accounts:home')
             except:
-                login_message = 'Ops, faça login para acessar essa página'
-                messages.error(self.request, login_message)
-                return reverse_lazy('accounts:login')
-"""
+                pass
+        return redirect('admin:index')
+
+
+class RedirectServantMixin:
+
+    redirect_url = None
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            servant = Servant.objects.get(id=self.request.user.id)
+            
+            if servant:
+                return super().dispatch(request, *args, **kwargs)
+        except:
+            try:
+                student = Student.objects.get(id=self.request.user.id)
+
+                message = 'Ops, você não é servidor'
+                messages.error(self.request, message)
+                
+                if student:
+                    return redirect('accounts:home')
+            except:
+                pass
+        return redirect('admin:index')

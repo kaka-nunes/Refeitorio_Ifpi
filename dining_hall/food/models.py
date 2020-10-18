@@ -12,9 +12,15 @@ class Food(models.Model):
     id = models.UUIDField(
         "id da refeição", primary_key=True, default=uuid.uuid4, editable=False
     )
+    campus = models.ForeignKey(
+        'course.Campus', on_delete=models.PROTECT, verbose_name='campus'
+    )
     description = models.CharField("decrição da refeição", max_length=255)
     date = models.DateField("data da refeição")
-    limit_quantity = models.PositiveIntegerField("quantidade limite")
+    total_quantity = models.PositiveIntegerField("quantidade total")
+    limit_quantity = models.PositiveIntegerField(
+        "quantidade restante", null=True, blank=True
+    )
     type_food = models.CharField(
         "tipe de refeição", choices=FOOD_CHOICES, max_length=14
     )
@@ -24,6 +30,13 @@ class Food(models.Model):
     )
     created_at = models.DateTimeField('criado em', auto_now_add=True)
     modified_at = models.DateTimeField('modificado em', auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.limit_quantity == None or\
+            self.limit_quantity > self.total_quantity:
+            self.limit_quantity = self.total_quantity
+        self.campus = self.registered_user.campus
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.description

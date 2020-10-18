@@ -6,6 +6,6 @@ class FoodAddForm(forms.ModelForm):
     class Meta:
         model = Food
         fields = [
-            'description', 'limit_quantity', 'date', 'type_food',
+            'description', 'total_quantity', 'date', 'type_food',
             'registered_user'
         ]

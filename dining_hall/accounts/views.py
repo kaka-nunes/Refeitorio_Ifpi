@@ -12,13 +12,16 @@ from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from dining_hall.accounts.forms import (
     StudantCreateForm, ServantCreateForm, ServantUpdateForm
 )
+from dining_hall.accounts.mixins import (
+    RedirectStudentMixin, RedirectServantMixin
+)
 from dining_hall.accounts.models import Servant, Student, User
 from dining_hall.food.models import Food, Reservation
 from dining_hall.food.forms import FoodAddForm
 
 
 
-# @method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class HomeRedirectView(RedirectView):
 
     permanent = False
@@ -35,19 +38,22 @@ class HomeRedirectView(RedirectView):
                 if servant:
                     return reverse_lazy('accounts:servant')
             except:
+                if self.request.user.id:
+                    return reverse_lazy('admin:index')
                 login_message = 'Ops, faça login para acessar essa página'
                 messages.error(self.request, login_message)
                 return reverse_lazy('accounts:login')
 
 
 @method_decorator(login_required, name='dispatch')
-class StudentHomeView(TemplateView):
+class StudentHomeView(RedirectStudentMixin, TemplateView):
     template_name = "accounts/student_home.html"
 
     def get_context_data(self, **kwargs):
         context = super(StudentHomeView, self).get_context_data(**kwargs)
         context['page_name'] = 'home'
         lim_quant = 'Não disponível'
+        total_quant = 'Não disponível'
         reservations = 'Não disponível'
         available = 'Não disponível'
         type_food = ' - fora do horário de reservas'
@@ -57,22 +63,25 @@ class StudentHomeView(TemplateView):
                 food = foods.get(type_food='Almoço')
                 context['food'] = food
                 lim_quant = food.limit_quantity
+                total_quant = food.total_quantity
                 if food.limit_quantity < 1:
                     lim_quant = 'Não disponível'
                 type_food = ' - Almoço'
-                reservations = str(Reservation.objects.filter(food=food).count())
+                reservations = Reservation.objects.filter(food=food).count()
             if datetime.now().hour >= 18:
+                type_food = ' - Jantar'
                 food = foods.get(type_food='Jantar')
                 context['food'] = food
                 lim_quant = food.limit_quantity
+                total_quant = food.total_quantity
                 if food.limit_quantity < 1:
                     lim_quant = 'Não disponível'
-                type_food = ' - Jantar'
                 reservations = Reservation.objects.filter(food=food).count()
-                available = food.limit_quantity - reservations
+                lim_quant = food.total_quant - reservations
         except:
             pass
         
+        context['total_quant'] = total_quant
         context['type_food'] = type_food
         context['reservations'] = reservations
         context['lim_quant'] = lim_quant
@@ -133,7 +142,8 @@ class CancelReservationView(View):
         if(len(reservations)) >= 1:
             messages.success(self.request, 'Reserva cancelada com sucesso')
             reservations[0].delete()
-            food.limit_quantity += 1
+            food.limit_quantity = food.limit_quantity + 1
+            food.save()
             return redirect(reverse_lazy('accounts:home'))
         else:
             messages.warning(
@@ -199,7 +209,7 @@ class AddMotiveView(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class ServantHomeView(TemplateView):
+class ServantHomeView(RedirectServantMixin, TemplateView):
     template_name = "accounts/servant_home.html"
 
     def get_context_data(self, **kwargs):

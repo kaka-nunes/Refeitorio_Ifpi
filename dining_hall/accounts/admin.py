@@ -46,10 +46,10 @@ class CustomUserAdmin(UserAdmin):
 
 class ServantAdmin(UserAdmin):
     list_display = [
-        'name', 'username', 'entry_date', 'is_active', 'is_staff', 'created_at'
+        'name', 'username', 'campus', 'entry_date', 'is_active', 'is_staff',
     ]
     list_filter = [
-        'name', 'username', 'entry_date', 'is_active', 'is_staff', 'created_at'
+        'name', 'username', 'entry_date', 'is_active', 'is_staff'
     ]
     search_fields = ['name', 'email', 'username']
     ordering = ['created_at', 'name', 'entry_date']
@@ -57,7 +57,7 @@ class ServantAdmin(UserAdmin):
     fieldsets = [
         [
             'Informações Pessoais', {'fields': [
-                'name', 'username', 'email', 'entry_date',
+                'name', 'username', 'email', 'campus', 'entry_date',
                 ]
             }
         ],
@@ -71,7 +71,7 @@ class ServantAdmin(UserAdmin):
     add_fieldsets = [
         ['Personal info', {
             'fields': [
-                'name', 'username', 'email', 'entry_date',
+                'name', 'username', 'email', 'campus', 'entry_date',
                 'password1', 'password2'
                 ]
             }
@@ -87,18 +87,15 @@ class ServantAdmin(UserAdmin):
 class StudentAdmin(UserAdmin):
     list_display = [
         'name', 'username', 'student_class', 'entry_date', 'birthdate',
-        'cpf', 'rg', 'is_active', 'is_staff', 'created_at', 
     ]
     list_filter = [
-        'name', 'username', 'birthdate', 'is_active', 'cpf', 'rg',
-        'is_staff', 'created_at'
+        'name', 'username', 'birthdate', 'is_active', 'cpf', 'rg'
     ]
     search_fields = [
         'name', 'email', 'username', 'student_class', 'entry_date'
     ]
     ordering = [
-        'created_at', 'name', 'birthdate', 'student_class', 'entry_date',
-        'username'
+        'created_at', 'name', 'username', 'birthdate', 'student_class'
         ]
 
     fieldsets = [
