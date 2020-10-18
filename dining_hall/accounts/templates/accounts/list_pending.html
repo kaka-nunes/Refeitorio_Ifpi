@@ -13,7 +13,7 @@
 					Servidor
 				</a>
 			</li>
-			<li class="bread-active">Refeição</li>
+			<li class="bread-active">Pendências</li>
 			<li class="bread-active">Listar</li>
 		</ol>
 	</div><!--/.row-->
@@ -33,26 +33,34 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default ">
-				<div class="panel-heading">Refeições</div>
+				<div class="panel-heading">Pendências</div>
 				<div class="panel-body timeline-container">
 					<ul class="timeline">
-						{% for food in object_list %}
+						{% for pending in object_list %}
 						<li>
 							<div class="timeline-badge primary">
-								<em class="glyphicon glyphicon-cutlery"></em>
+								<em class="glyphicon glyphicon-bell"></em>
 							</div>
 							<div class="timeline-panel">
 								<div class="timeline-body">
 									<div class="col-md-6">
-										<p style="color: #000000;"><b>Descrição: </b>{{ food.description }}</p>
-										<p style="color: #000000;"><b>Data: </b>{{ food.date }}</p>										
-										<p style="color: #000000;"><b>Servidor que cadastrou: </b>{{ food.registered_user }}</p>										
+										<p style="color: #000000;"><b>Descrição: </b>{{ pending.food.description }}</p>
+										<p style="color: #000000;"><b>Data: </b>{{ pending.date }}</p>
+										{% if  pending.user_removed_pending %}									
+											<p style="color: #000000;"><b>Servidor que retirou: </b>{{ pending.user_removed_pending }}</p>
+										{% endif %}
 									</div>
 									<div class="col-md-6">
-										<p style="color: #000000;"><b>Quantidade limite: </b>{{ food.limit_quantity }}</p>
-										<p style="color: #000000;"><b>Tipo de refeição: </b>{{ food.type_food }}</p>
-										<a class="btn btn-warning" href="{% url 'accounts:edit_food' pk=food.id %}">
-											<em class="glyphicon glyphicon-edit"></em> Alterar</a>
+										<p style="color: #000000;"><b>Aluno: </b>{{ pending.registered_user }}</p>
+										{% if  pending.user_removed_pending %}
+											<p style="color: #000000;"><b>Motivo: </b>{{ pending.motive }}</p>
+										{% endif %}
+										{% if  pending.pending %}
+											<a class="btn btn-warning" href="{% url 'accounts:edit_food' pk=pending.id %}">
+												<em class="glyphicon glyphicon-edit"></em> Retirar pendência
+											</a>
+										{% endif %}
+
 									</div>
 								</div>
 							</div>

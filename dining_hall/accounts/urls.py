@@ -57,4 +57,7 @@ urlpatterns = [
     path(
         'edit_food/<str:pk>', views.UpdateFoodView.as_view(), name='edit_food'
     ),
+    path(
+        'list_pending/', views.ListPendingView.as_view(), name='list_pending'
+    ),
 ]

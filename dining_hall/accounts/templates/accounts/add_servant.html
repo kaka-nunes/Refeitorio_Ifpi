@@ -33,8 +33,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">
-					{{action}} Servidor
+				<div class="panel-heading d-flex justify-content-between">
+						<div class="col-md-10">{{action}} Servidor</div>
+						{% if page_name == 'profile' %}
+						<a class="btn btn-warning ml-auto"><i class="fa fa-edit"></i>&nbsp;Alterar a senha</a>
+						{% endif%}
+					
 				</div>					
 				<div class="panel-body">
 					<form class="form-vertical" action="" method="post" enctype="multipart/form-data">
@@ -68,8 +72,11 @@
 								</div>
 								<div class="row">
 									{% endif %}
-									<div class="col-md-3">
+									<div class="col-md-5">
 										{{ form.profilepic | bootstrap}}
+									</div>
+									<div class="col-md-4">
+										{{ form.campus | bootstrap}}
 									</div>
 								</div>
 								</div>

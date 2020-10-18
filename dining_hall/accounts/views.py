@@ -1,4 +1,5 @@
 from datetime import datetime
+from itertools import chain
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -371,6 +372,8 @@ class UpdateServantView(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(UpdateServantView, self).get_context_data(**kwargs)
         context['page_name'] = 'servant'
+        if str(self.request.user.id) == str(self.kwargs['pk']):
+            context['page_name'] = 'profile'
         context['action'] = 'Alterar'
         return context
 
@@ -432,4 +435,21 @@ class UpdateFoodView(SuccessMessageMixin, UpdateView):
         context = super(UpdateFoodView, self).get_context_data(**kwargs)
         context['page_name'] = 'food'
         context['action'] = 'Alterar'
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class ListPendingView(ListView):
+    model = Food
+    template_name = "accounts/list_pending.html"
+
+    def get_queryset(self):
+        q1 = Reservation.objects.filter(pending=True)
+        q2 = Reservation.objects.exclude(pending_withdrawal_date=None)
+        queryset = list(chain(q1, q2))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super(ListPendingView, self).get_context_data(**kwargs)
+        context['page_name'] = 'pending'
         return context

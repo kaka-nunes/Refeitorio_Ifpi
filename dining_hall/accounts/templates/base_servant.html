@@ -52,7 +52,7 @@
 				</a>
 			</li>
 			<li class="{% if page_name == 'profile' %} active {% endif %}">
-				<a href="{% url 'accounts:home' %}">
+				<a href="{% url 'accounts:edit_servant' pk=request.user.id %}">
 					<em class="fa fa-user">&nbsp;</em> Perfil
 				</a>
 			</li>
@@ -120,8 +120,8 @@
 					</li>
 				</ul>
 			</li>
-			<li>
-				<a href="#"><em class="fa fa-warning">&nbsp;</em> Pendência</a>
+			<li class="parent {% if page_name == 'pending' %} active {% endif %}">
+				<a href="{% url 'accounts:list_pending' %}"><em class="fa fa-warning">&nbsp;</em> Pendência</a>
 			</li>
 			<li>
 				<a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a>

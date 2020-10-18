@@ -22,15 +22,24 @@ class ServantCreateForm(UserCreationForm):
     class Meta:
         model = Servant
         fields = [
-            'username', 'name', 'email', 'entry_date', 'profilepic',
+            'username', 'name', 'email', 'entry_date', 'profilepic', 'campus',
             'password1', 'password2'
         ]
 
 
 class ServantUpdateForm(UserChangeForm):
-    username = forms.CharField(label='SUAP')
+    username = forms.CharField(label='SUAP', disabled=True)
+
     class Meta:
         model = Servant
         fields = [
-            'username', 'name', 'email', 'entry_date', 'profilepic',
+            'username', 'name', 'email', 'entry_date', 'profilepic', 'campus'
         ]
+    
+    def __init__(self, *args, **kwargs):
+        super(ServantUpdateForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['name'].widget.attrs['readonly'] = True
+            self.fields['email'].widget.attrs['readonly'] = True
+            self.fields['entry_date'].widget.attrs['readonly'] = True
