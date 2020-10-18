@@ -32,8 +32,8 @@ class Food(models.Model):
     modified_at = models.DateTimeField('modificado em', auto_now=True)
 
     def save(self, *args, **kwargs):
-        if self.limit_quantity == None or\
-            self.limit_quantity > self.total_quantity:
+        if self.limit_quantity is None or\
+                self.limit_quantity > self.total_quantity:
             self.limit_quantity = self.total_quantity
         self.campus = self.registered_user.campus
         super().save(*args, **kwargs)
@@ -66,16 +66,14 @@ class Reservation(models.Model):
         "accounts.Servant", verbose_name="usuário que retirou a pendência",
         on_delete=models.PROTECT, null=True, blank=True
     )
-    motive = models.CharField(
-        'motivo da pendência', null=True, blank=True, max_length=255
-    )
+    motive = models.TextField('motivo da pendência', null=True, blank=True)
     created_at = models.DateTimeField('criado em', auto_now_add=True)
     modified_at = models.DateTimeField('modificado em', auto_now=True)
 
     def __str__(self):
-        return  self.food.type_food + " - " + str(self.registered_user) +\
+        return self.food.type_food + " - " + str(self.registered_user) +\
             " - " + str(self.date.day) + "/" + str(self.date.month) + "/" +\
-                str(self.date.year)
+            str(self.date.year)
 
     class Meta:
         verbose_name = 'reserva'

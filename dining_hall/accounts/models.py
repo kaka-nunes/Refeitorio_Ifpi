@@ -54,11 +54,11 @@ class Servant(User):
     campus = models.ForeignKey(
         'course.Campus', on_delete=models.PROTECT, verbose_name='campus'
     )
-    
+
     def save(self, *args, **kwargs):
         self.is_staff, self.is_admin, self.is_superuser = True, True, True
         super().save(*args, **kwargs)
-    
+
     class Meta:
         verbose_name = 'servidor'
         verbose_name_plural = 'servidores'

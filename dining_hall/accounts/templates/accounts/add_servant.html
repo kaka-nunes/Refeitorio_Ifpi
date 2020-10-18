@@ -36,7 +36,9 @@
 				<div class="panel-heading d-flex justify-content-between">
 						<div class="col-md-10">{{action}} Servidor</div>
 						{% if page_name == 'profile' %}
-						<a class="btn btn-warning ml-auto"><i class="fa fa-edit"></i>&nbsp;Alterar a senha</a>
+						<a class="btn btn-warning ml-auto" href="{% url 'accounts:update_pass' %}">
+							<i class="fa fa-edit"></i>&nbsp;Alterar a senha
+						</a>
 						{% endif%}
 					
 				</div>					

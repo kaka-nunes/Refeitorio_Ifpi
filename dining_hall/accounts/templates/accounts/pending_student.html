@@ -47,16 +47,7 @@
 								<p style="color: #000000;">{% if pending.pending_withdrawal_date %}Data da pendência: {{pending.pending_withdrawal_date}}{% endif %}</p>
 								<p style="color: #000000;">{% if pending.user_removed_pending %}Servidor que retirou a pendência: {{pending.user_removed_pending}}{% endif %}</p>
 							</div>
-							<div class="col-md-6">
-								<form action="{% url 'accounts:add_motive' %}" method="POST">
-									{% csrf_token %}
-									<input type="hidden" name='id_pending' value="{{pending.pk}}">
-									<input class="form-control" type="text" name="motive" placeholder="{% if pending.motive %} {{ pending.motive }} {% else %} Motivo {% endif %}" value="{% if pending.motive %} {{ pending.motive }} {% else %}{% endif %}"/>
-									<br>&nbsp;
-									<input type="submit" class="btn btn-info" name="enviar">
-								</form>
-							</div>
-							</div>
+						</div>
 					</div>
 				</li>
 				{% endfor %}

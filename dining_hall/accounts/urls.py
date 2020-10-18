@@ -26,7 +26,6 @@ urlpatterns = [
     ),
     path('historic/', views.HistoryStudentView.as_view(), name='historic'),
     path('pending/', views.PendingStudentView.as_view(), name='pending'),
-    path('add_motive/', views.AddMotiveView.as_view(), name='add_motive'),
     path('servant/', views.ServantHomeView.as_view(), name='servant'),
     path('add_student/', views.AddStudentView.as_view(), name='add_student'),
     path(
@@ -59,5 +58,13 @@ urlpatterns = [
     ),
     path(
         'list_pending/', views.ListPendingView.as_view(), name='list_pending'
+    ),
+    path(
+        'update_pass/', views.UserPasswordChangeView.as_view(),
+        name='update_pass'
+    ),
+    path(
+        'remove_pending/<str:pk>', views.RemovePendingView.as_view(),
+        name='remove_pending'
     ),
 ]

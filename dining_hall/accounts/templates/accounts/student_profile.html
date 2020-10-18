@@ -31,7 +31,12 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default ">
-				<div class="panel-heading">{{ object.name }}</div>
+				<div class="panel-heading d-flex justify-content-between">
+					<div class="col-md-10">{{ object.name }}</div>
+					<a class="btn btn-warning ml-auto" href="{% url 'accounts:update_pass' %}">
+						<i class="fa fa-edit"></i>&nbsp;Alterar a senha
+					</a>
+				</div>
 				<div class="panel-body timeline-container">
                     <div class="timeline-body">
                         <div class="col-md-10">

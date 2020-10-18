@@ -44,19 +44,20 @@
 							<div class="timeline-panel">
 								<div class="timeline-body">
 									<div class="col-md-6">
-										<p style="color: #000000;"><b>Descrição: </b>{{ pending.food.description }}</p>
-										<p style="color: #000000;"><b>Data: </b>{{ pending.date }}</p>
+										<p style="color: #000000;"><b>Aluno: </b>{{ pending.registered_user }}</p>
 										{% if  pending.user_removed_pending %}									
-											<p style="color: #000000;"><b>Servidor que retirou: </b>{{ pending.user_removed_pending }}</p>
+										<p style="color: #000000;"><b>Servidor que retirou: </b>{{ pending.user_removed_pending }}</p>
+										<p style="color: #000000;"><b>Data da retirada: </b>{{ pending.pending_withdrawal_date }}</p>
 										{% endif %}
 									</div>
 									<div class="col-md-6">
-										<p style="color: #000000;"><b>Aluno: </b>{{ pending.registered_user }}</p>
+										<p style="color: #000000;"><b>Descrição: </b>{{ pending.food.description }}</p>
+										<p style="color: #000000;"><b>Data: </b>{{ pending.date }}</p>
 										{% if  pending.user_removed_pending %}
 											<p style="color: #000000;"><b>Motivo: </b>{{ pending.motive }}</p>
 										{% endif %}
 										{% if  pending.pending %}
-											<a class="btn btn-warning" href="{% url 'accounts:edit_food' pk=pending.id %}">
+											<a class="btn btn-warning" href="{% url 'accounts:remove_pending' pk=pending.id %}">
 												<em class="glyphicon glyphicon-edit"></em> Retirar pendência
 											</a>
 										{% endif %}

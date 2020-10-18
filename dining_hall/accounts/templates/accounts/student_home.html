@@ -53,14 +53,14 @@
 			
 			<div class="col-md-5">
 				<center>
-					<a href="{% url 'accounts:add_reservation' %}" class="btn btn-lg btn-info {% if lim_quant == 'Não disponível' %} disabled {% endif %}">Reservar refeição</a>
+					<a href="{% url 'accounts:add_reservation' %}" class="btn btn-lg btn-info {% if lim_quant == 'Não disponível' or reservation_unavailable %} disabled {% endif %}">Reservar refeição</a>
 		
 				</center>
 			</div>
 			<div class="col-md-2">&nbsp;</div>
 			<div class="col-md-5">
 				<center>
-					<a href="{% url 'accounts:cancel_reservation' %}" class="btn btn-lg btn-danger {% if lim_quant == 'Não disponível' %} disabled {% endif %}">Cancelar refeição</a>
+					<a href="{% url 'accounts:cancel_reservation' %}" class="btn btn-lg btn-danger {% if lim_quant == 'Não disponível' or reservation_unavailable %} disabled {% endif %}">Cancelar refeição</a>
 				</center>
 			</div>
 		</div>

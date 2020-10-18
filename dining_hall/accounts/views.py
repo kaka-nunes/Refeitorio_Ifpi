@@ -4,6 +4,7 @@ from itertools import chain
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.views import PasswordChangeView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -18,7 +19,7 @@ from dining_hall.accounts.mixins import (
 )
 from dining_hall.accounts.models import Servant, Student, User
 from dining_hall.food.models import Food, Reservation
-from dining_hall.food.forms import FoodAddForm
+from dining_hall.food.forms import FoodAddForm, PendingRemoveForm
 
 
 
@@ -34,7 +35,7 @@ class HomeRedirectView(RedirectView):
             if student:
                 return reverse_lazy('accounts:student')
         except:
-            try: 
+            try:
                 servant = Servant.objects.get(id=self.request.user.id)
                 if servant:
                     return reverse_lazy('accounts:servant')
@@ -81,18 +82,20 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
                 lim_quant = food.total_quant - reservations
         except:
             pass
-        
+        if datetime.now().hour > 10 and datetime.now().hour < 14 or \
+                datetime.now().hour > 16:
+            context['reservation_unavailable'] = True
         context['total_quant'] = total_quant
         context['type_food'] = type_food
         context['reservations'] = reservations
         context['lim_quant'] = lim_quant
         context['available'] = available
-        
         context['peding'] = Reservation.objects.filter(
-            registered_user=self.request.user).count()
-            
+            registered_user=self.request.user
+        ).count()
         context["student"] = Student.objects.get(id=self.request.user.id)
         return context
+
 
 @method_decorator(login_required, name='dispatch')
 class AddReservationView(View):
@@ -107,8 +110,8 @@ class AddReservationView(View):
         reservations = Reservation.objects.filter(date=datetime.now()).filter(
             registered_user=student).filter(food=food)
         if(len(reservations)) >= 1:
-            messages.warning(self.request,
-                'Ops, já existe reserva para essa refeição'
+            messages.warning(
+                self.request, 'Ops, já existe reserva para essa refeição'
             )
             return redirect(reverse_lazy('accounts:home'))
         reservation = Reservation.objects.create(
@@ -162,7 +165,6 @@ class HistoryStudentView(ListView):
             registered_user__id=self.request.user.id)
         return queryset
 
-
     def get_context_data(self, **kwargs):
         context = super(HistoryStudentView, self).get_context_data(**kwargs)
         context['page_name'] = 'history'
@@ -178,7 +180,6 @@ class PendingStudentView(ListView):
             registered_user__id=self.request.user.id).filter(pending=True)
         return queryset
 
-
     def get_context_data(self, **kwargs):
         context = super(PendingStudentView, self).get_context_data(**kwargs)
         context['page_name'] = 'peding'
@@ -189,24 +190,11 @@ class PendingStudentView(ListView):
 class StudentProfileView(DetailView):
     model = Student
     template_name = "accounts/student_profile.html"
-    
+
     def get_context_data(self, **kwargs):
         context = super(StudentProfileView, self).get_context_data(**kwargs)
         context['page_name'] = 'profile'
         return context
-
-
-@method_decorator(login_required, name='dispatch')
-class AddMotiveView(View):
-    def post(self, *args, **kwargs):
-        pk = self.request.POST.get('id_pending')
-        reservation = Reservation.objects.get(id=pk)
-        reservation.motive = self.request.POST.get('motive')
-        reservation.save()
-        message = 'Motivo adicionado com sucesso'
-        messages.success(self.request, message)
-        success_url = reverse_lazy('accounts:pending')
-        return redirect(success_url)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -224,7 +212,7 @@ class ServantHomeView(RedirectServantMixin, TemplateView):
         available = 0
         if today.hour > 12:
             type_food = 'Jantar'
-        try: 
+        try:
             foods = Food.objects.filter(date=today)
             if len(foods) > 0:
                 food = foods.get(type_food=type_food)
@@ -240,7 +228,7 @@ class ServantHomeView(RedirectServantMixin, TemplateView):
         context['available'] = available
         context['reservations'] = reservations
         context['total_reservations'] = total_reservations
-        context['page_name'] = 'home'   
+        context['page_name'] = 'home'
         context["servant"] = Servant.objects.get(id=self.request.user.id)
         return context
 
@@ -268,7 +256,6 @@ class ListStudentView(ListView):
         queryset = Student.objects.all()
         return queryset
 
-
     def get_context_data(self, **kwargs):
         context = super(ListStudentView, self).get_context_data(**kwargs)
         context['page_name'] = 'student'
@@ -277,7 +264,7 @@ class ListStudentView(ListView):
 
 @method_decorator(login_required, name='dispatch')
 class InativeStudentView(View):
-    
+
     def get(self, request, pk):
         student = Student.objects.get(pk=pk)
         action = 'desativado'
@@ -307,6 +294,29 @@ class UpdateStudentView(SuccessMessageMixin, UpdateView):
         return context
 
 
+class RemovePendingView(SuccessMessageMixin, UpdateView):
+    model = Reservation
+    template_name = 'accounts/remove_pending.html'
+    form_class = PendingRemoveForm
+    success_url = reverse_lazy('accounts:list_pending')
+
+    def get_context_data(self, **kwargs):
+        context = super(RemovePendingView, self).get_context_data(**kwargs)
+        context['page_name'] = 'pending'
+        return context
+
+    def form_valid(self, form):
+        reservation = form.save(commit=False)
+        servant = Servant.objects.get(pk=self.request.user.pk)
+        reservation.user_removed_pending = servant
+        reservation.pending_withdrawal_date = datetime.now()
+        reservation.pending = False
+        reservation.save()
+        message = 'Pendência retirada com sucesso'
+        messages.success(self.request, message)
+        return redirect(self.success_url)
+
+
 class AddServantView(SuccessMessageMixin, CreateView):
     model = Servant
     template_name = 'accounts/add_servant.html'
@@ -330,7 +340,6 @@ class ListServantView(ListView):
         queryset = Servant.objects.all()
         return queryset
 
-
     def get_context_data(self, **kwargs):
         context = super(ListServantView, self).get_context_data(**kwargs)
         context['page_name'] = 'servant'
@@ -339,7 +348,7 @@ class ListServantView(ListView):
 
 @method_decorator(login_required, name='dispatch')
 class InativeServantView(View):
-    
+
     def get(self, request, pk):
         success_url = reverse_lazy('accounts:list_servant')
         servant1 = Servant.objects.get(pk=pk)
@@ -452,4 +461,25 @@ class ListPendingView(ListView):
     def get_context_data(self, **kwargs):
         context = super(ListPendingView, self).get_context_data(**kwargs)
         context['page_name'] = 'pending'
+        return context
+
+
+class UserPasswordChangeView(PasswordChangeView):
+    template_name = 'accounts/update_pass.html'
+    success_url = reverse_lazy('accounts:home')
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Senha alterada com sucesso')
+        return super().form_valid(form)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(
+            UserPasswordChangeView, self).get_context_data(**kwargs)
+        context['page_name'] = 'profile'
+        try:
+            student = Student.objects.get(id=self.request.user.id)
+            if student:
+                context['template_base'] = "base.html"
+        except:
+            context['template_base'] = "base_servant.html"
         return context

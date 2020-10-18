@@ -77,14 +77,23 @@
 										{{ form.profilepic | bootstrap}}
 									</div>
 								</div>
-								</div>
-									
-									<!-- Form actions -->
-									<div class="form-group">
-										<div class="col-md-12 widget-right">
-											<button type="submit" class="btn btn-default btn-md pull-right">Enviar</button>
-										</div>
+								<div class="row">
+								{% if form.password1 %}
+									<div class="col-md-4">
+										{{ form.password1 | bootstrap}}
 									</div>
+									<div class="col-md-4">
+										{{ form.password2 | bootstrap}}
+									</div>
+								{% endif %}
+								<div class="col-md-12" align="center">
+									<br>
+									<button type="submit" class="btn btn-success btn-lg pull-center">Enviar</button>
+								</div>
+								<!-- Form actions -->
+								<div class="form-group">
+									
+								</div>
 							</div>
 						</fieldset>
 					</form>
