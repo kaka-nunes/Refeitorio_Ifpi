@@ -67,4 +67,8 @@ urlpatterns = [
         'remove_pending/<str:pk>', views.RemovePendingView.as_view(),
         name='remove_pending'
     ),
+    path(
+        'confirm_reservation/', views.ConfirmReservationView.as_view(),
+        name='confirm_reservation'
+    ),
 ]

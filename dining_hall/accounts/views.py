@@ -12,7 +12,8 @@ from django.views.generic.base import RedirectView, TemplateView, View
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
 
 from dining_hall.accounts.forms import (
-    StudantCreateForm, ServantCreateForm, ServantUpdateForm
+    StudantCreateForm, ServantCreateForm, ServantUpdateForm,
+    ConfirmReservationForm
 )
 from dining_hall.accounts.mixins import (
     RedirectStudentMixin, RedirectServantMixin
@@ -70,7 +71,7 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
                     lim_quant = 'Não disponível'
                 type_food = ' - Almoço'
                 reservations = Reservation.objects.filter(food=food).count()
-            if datetime.now().hour >= 18:
+            if datetime.now().hour <= 21:
                 type_food = ' - Jantar'
                 food = foods.get(type_food='Jantar')
                 context['food'] = food
@@ -83,7 +84,7 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
         except:
             pass
         if datetime.now().hour > 10 and datetime.now().hour < 14 or \
-                datetime.now().hour > 16:
+                datetime.now().hour < 21:
             context['reservation_unavailable'] = True
         context['total_quant'] = total_quant
         context['type_food'] = type_food
@@ -92,7 +93,7 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
         context['available'] = available
         context['peding'] = Reservation.objects.filter(
             registered_user=self.request.user
-        ).count()
+        ).filter(pending=True).count()
         context["student"] = Student.objects.get(id=self.request.user.id)
         return context
 
@@ -214,16 +215,15 @@ class ServantHomeView(RedirectServantMixin, TemplateView):
             type_food = 'Jantar'
         try:
             foods = Food.objects.filter(date=today)
-            if len(foods) > 0:
+            if foods.count() >= 1:
                 food = foods.get(type_food=type_food)
-                total_reservations = food[0].limit_quantity
-                reservations = int(
-                    Reservation.objects.filter(food=food).count())
+                total_reservations = food.total_quantity
+                reservations = Reservation.objects.filter(food=food).count()
                 available = total_reservations - reservations
                 context['type_food'] = str(food)
         except:
             pass
-        pending = Reservation.objects.filter(pending=True).count
+        pending = Reservation.objects.filter(pending=True).count()
         context['peding'] = pending
         context['available'] = available
         context['reservations'] = reservations
@@ -483,3 +483,35 @@ class UserPasswordChangeView(PasswordChangeView):
         except:
             context['template_base'] = "base_servant.html"
         return context
+
+
+class ConfirmReservationView(SuccessMessageMixin, TemplateView):
+    template_name = 'accounts/reservations.html'
+
+    def post(self, *args, **kwargs):
+        today = datetime.now()
+        type_food = 'Almoço'
+        if today.hour > 14:
+            type_food = 'Jantar'
+        try:
+            foods = Food.objects.filter(date=today)
+            if foods.count() >= 1:
+                food = foods.get(type_food=type_food)
+                user = Student.objects.get(
+                    username=self.request.POST['username']
+                )
+                reservation = Reservation.objects.get(
+                    food=food, registered_user=user
+                )
+                message = "Pendência retirada"
+                if reservation.pending == False:
+                    message = "Pendência já retirada"
+                    messages.warning(self.request, message)
+                else:
+                    reservation.pending = False
+                    reservation.save()
+                    messages.success(self.request, message)
+        except:
+            messages.error(self.request, "Reserva não encontrada")
+
+        return redirect(reverse_lazy('accounts:confirm_reservation'))

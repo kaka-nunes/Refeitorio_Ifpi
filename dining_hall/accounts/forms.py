@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from dining_hall.accounts.models import Student, Servant
+from dining_hall.food.models import Reservation
 
 
 class StudantCreateForm(forms.ModelForm):
@@ -44,6 +45,22 @@ class StudantCreateForm(forms.ModelForm):
 
 class AddMotivePendingForm(forms.Form):
     motive = forms.CharField(label='Motivo')
+
+
+class ConfirmReservationForm(forms.ModelForm):
+    username = forms.CharField(label='Matrícula')
+
+    class Meta:
+        model = Reservation
+        fields = ['username']
+    
+    def save(self, commit=True):
+        reservation = super().save(commit=False)
+        reservation.pending=False
+        if commit:
+            reservation.save()
+        return reservation
+
 
 
 class ServantCreateForm(UserCreationForm):

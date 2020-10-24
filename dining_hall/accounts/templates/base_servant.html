@@ -124,6 +124,9 @@
 				<a href="{% url 'accounts:list_pending' %}"><em class="fa fa-warning">&nbsp;</em> Pendência</a>
 			</li>
 			<li>
+				<a href="{% url 'accounts:confirm_reservation' %}"><i class="fas fa-clock"></i> Hora do rango</a>
+			</li>
+			<li>
 				<a href="{% url 'accounts:logout' %}"><em class="fa fa-power-off">&nbsp;</em> Sair</a>
 			</li>
 		</ul>
@@ -151,6 +154,7 @@
 	<script src="{% static 'js/easypiechart-data.js' %}"></script>
 	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 	<script src="{% static 'js/custom.js' %}"></script>
+	<script src="https://kit.fontawesome.com/52ff9bea34.js" crossorigin="anonymous"></script>
 	<script>
 		window.onload = function () {
 	var chart1 = document.getElementById("line-chart").getContext("2d");
