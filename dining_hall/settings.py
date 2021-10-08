@@ -1,6 +1,3 @@
-"""
-Django settings for dining_hall project.
-"""
 import os
 from pathlib import Path
 from decouple import config, Csv

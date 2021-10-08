@@ -71,7 +71,7 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
                     lim_quant = 'Não disponível'
                 type_food = ' - Almoço'
                 reservations = Reservation.objects.filter(food=food).count()
-            if datetime.now().hour <= 21:
+            if datetime.now().hour >= 18:
                 type_food = ' - Jantar'
                 food = foods.get(type_food='Jantar')
                 context['food'] = food
@@ -84,7 +84,7 @@ class StudentHomeView(RedirectStudentMixin, TemplateView):
         except:
             pass
         if datetime.now().hour > 10 and datetime.now().hour < 14 or \
-                datetime.now().hour < 21:
+                datetime.now().hour > 23:
             context['reservation_unavailable'] = True
         context['total_quant'] = total_quant
         context['type_food'] = type_food
@@ -456,7 +456,7 @@ class ListPendingView(ListView):
         q1 = Reservation.objects.filter(pending=True)
         q2 = Reservation.objects.exclude(pending_withdrawal_date=None)
         queryset = list(chain(q1, q2))
-        return queryset
+        return q1
 
     def get_context_data(self, **kwargs):
         context = super(ListPendingView, self).get_context_data(**kwargs)
